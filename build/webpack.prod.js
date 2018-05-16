@@ -5,5 +5,9 @@ const common = require('./webpack.common.js');
 module.exports = merge(common(false), {
     plugins: [
         new UglifyJSPlugin()
-    ]
+    ],
+    output: {
+        libraryTarget: 'umd',
+        library: 'SoftTouch'
+    }
 });

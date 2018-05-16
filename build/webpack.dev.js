@@ -6,5 +6,9 @@ module.exports = merge(common(true), {
     devtool: 'inline-source-map',
     plugins: [
         new CleanWebpackPlugin(['dist'])
-    ]
+    ],
+    output: {
+        libraryTarget: 'umd',
+        library: 'SoftTouch'
+    }
 });
