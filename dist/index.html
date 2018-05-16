@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+        <title>Soft Touch usage example</title>
+        <style>
+            .drop-area {
+                display: inline-block;
+                width: 500px;
+                height: 500px;
+                background: burlywood;
+                border-radius: 3px;
+                margin: 20px;
+            }
+            .element {
+                cursor: pointer;
+                position: absolute;
+                background: cornflowerblue;
+                border: 1px solid deepskyblue;
+                border-radius: 5px;
+                padding: 5px 10px;
+            }
+            .highlight {
+                background: coral;
+                border: 2px solid chocolate;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="area1" class="drop-area"></div>
+        <div id="area2" class="drop-area"></div>
+
+        <div id="item1" class="element">drag me every where</div>
+        <div id="item2" class="element">rotate me or drag only in the area only with fingers</div>
+        <div id="item3" class="element">drag me between areas</div>
+    <script type="text/javascript" src="example.js"></script></body>
+</html>

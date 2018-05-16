@@ -1,0 +1,39 @@
+{
+  "name": "soft-touch",
+  "version": "0.0.1",
+  "description": "Touches and gesture recognizing library",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "webpack --config ./build/webpack.dev.js && webpack --config ./build/webpack.prod.js && webpack --config ./build/webpack.example.js",
+    "watch": "webpack-dev-server --open --config ./build/webpack.example.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avsokolov/soft-touch.git"
+  },
+  "keywords": [
+    "touch",
+    "mobile",
+    "gesture",
+    "phisics"
+  ],
+  "author": "alexander.sokolov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/avsokolov/soft-touch/issues"
+  },
+  "homepage": "https://github.com/avsokolov/soft-touch#readme",
+  "dependencies": {
+    "hammerjs": "^2.0.8"
+  },
+  "devDependencies": {
+    "clean-webpack-plugin": "^0.1.19",
+    "html-loader": "^0.5.5",
+    "html-webpack-plugin": "^3.2.0",
+    "uglifyjs-webpack-plugin": "^1.2.5",
+    "webpack": "^4.8.3",
+    "webpack-cli": "^2.1.3",
+    "webpack-dev-server": "^3.1.4",
+    "webpack-merge": "^4.1.2"
+  }
+}
