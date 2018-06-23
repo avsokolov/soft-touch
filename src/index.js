@@ -1,5 +1,6 @@
 import {TapType, FingersCount, GestureType} from './constants';
 import {TouchGesture} from './gestures/touch'
+import {MouseClickGesture} from './gestures/mouse-click';
 
 export const Types = {
     TapType,
@@ -19,6 +20,9 @@ export function GestureFactory({gestureType, target, options = {}}) {
     switch (gestureType) {
         case GestureType.Touch:
             result = new TouchGesture(el, options);
+            break;
+        case GestureType.MouseClick:
+            result = new MouseClickGesture(el, options);
             break;
         default:
             throw new Error('Not implemented or unsupported gesture type');

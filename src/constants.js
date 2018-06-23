@@ -3,7 +3,7 @@ export const GestureType = {
     MouseClick: 2,
     MouseDragOver: 3,
     MouseWheel: 4,
-    Touch: 'touch',
+    Touch: 5,
     TouchDragOver: 6,
     Swipe: 7,
     Spread: 8,
