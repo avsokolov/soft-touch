@@ -1,28 +1,40 @@
-import {TapType, FingersCount, GestureType} from './constants';
-import {TouchGesture} from './gestures/touch'
-import {MouseClickGesture} from './gestures/mouse-click';
+import {TapType, FingersCount, GestureType, InputType, MouseSegment} from './constants';
+import {TouchClickGesture} from './gestures/touch-click';
+import {MouseWheelGesture} from './gestures/mouse-wheel';
+import {MouseOverGesture} from './gestures/mouse-over';
+import {DragOverGesture} from './gestures/drag-over';
 
 export const Types = {
     TapType,
     FingersCount,
-    GestureType
+    GestureType,
+    InputType,
+    MouseSegment
 };
 
-const elements = new Map();
-
 export function GestureFactory({gestureType, target, options = {}}) {
-    if (!elements.has(target)) {
-        elements.set(target, new Hammer(target));
+    if (!(target instanceof Node)) {
+        if (target.node && target.node instanceof Node) {
+            //support of SVG.JS
+            target = target.node;
+        } else {
+            throw new Error('Target should be a DOM node or SVG.JS element');
+        }
     }
 
-    const el = elements.get(target);
     let result;
     switch (gestureType) {
-        case GestureType.Touch:
-            result = new TouchGesture(el, options);
+        case GestureType.TouchClick:
+            result = new TouchClickGesture(target, options);
             break;
-        case GestureType.MouseClick:
-            result = new MouseClickGesture(el, options);
+        case GestureType.MouseOver:
+            result = new MouseOverGesture(target, options);
+            break;
+        case GestureType.DragOver:
+            result = new DragOverGesture(target, options);
+            break;
+        case GestureType.MouseWheel:
+            result = new MouseWheelGesture(target, options);
             break;
         default:
             throw new Error('Not implemented or unsupported gesture type');

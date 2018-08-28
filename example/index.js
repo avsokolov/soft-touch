@@ -1,77 +1,108 @@
 import {GestureFactory, Types} from '../src';
 
-const area1 = document.getElementById('area1');
-const area2 = document.getElementById('area2');
+const draw = SVG('drawing');
+const rect1 = draw.rect(200, 200).move(50, 50).fill("#9cf");
+const rect2 = draw.rect(200, 200).move(50, 300).fill("#7ef");
 
-const item1 = document.getElementById('item1');
-const item2 = document.getElementById('item2');
-const item3 = document.getElementById('item3');
-const item4 = document.getElementById('item4');
+const rect1Touch = GestureFactory({
+    gestureType: Types.GestureType.TouchClick,
 
-const area1Pos = area1.getBoundingClientRect();
-const area2Pos = area2.getBoundingClientRect();
-
-item1.style.left = (area1Pos.left + 10)+'px';
-item1.style.top = (area1Pos.top + 10)+'px';
-item2.style.left = (area1Pos.left + 10)+'px';
-item2.style.top = (area1Pos.top + 50)+'px';
-item3.style.left = (area2Pos.left + 10)+'px';
-item3.style.top = (area2Pos.top + 10)+'px';
-item4.style.left = (area1Pos.left + 10)+'px';
-item4.style.top = (area1Pos.top + 100)+'px';
-
-const item1Touch = GestureFactory({
-    gestureType: Types.GestureType.Touch,
     options: {
         tapType: Types.TapType.long,
+        inputType: Types.InputType.any,
         timeout: 500
     },
-    target: item1
+    target: rect1
 });
 
-const item4Touch = GestureFactory({
-    gestureType: Types.GestureType.MouseClick,
+const rect2Touch = GestureFactory({
+    gestureType: Types.GestureType.TouchClick,
     options: {
-        tapType: Types.TapType.long,
-        timeout: 500
+        tapType: Types.TapType.single
     },
-    target: item4
+    target: rect2
+});
+
+const dragOver = GestureFactory({
+    gestureType: Types.GestureType.DragOver,
+    options: {},
+    target: document.getElementById('drawing')
+});
+
+dragOver.begin(() => {
+    document.getElementById('drawing').classList.add('highlight');
+    console.log(dragOver.event);
+});
+dragOver.end(() => {
+    document.getElementById('drawing').classList.remove('highlight');
+});
+
+const wheel = GestureFactory({
+    gestureType: Types.GestureType.MouseWheel,
+    options: {},
+    target: document.getElementById('drawing')
+});
+
+wheel.move(() => {
+    if (wheel.event.deltaX) {
+        rect1.x(rect1.x() - wheel.event.deltaX);
+        rect2.x(rect2.x() - wheel.event.deltaX);
+    }
+    if (wheel.event.deltaY) {
+        rect1.y(rect1.y() - wheel.event.deltaY);
+        rect2.y(rect2.y() - wheel.event.deltaY);
+    }
 });
 
 let item1Pos;
-item1Touch.begin(() => {
-    area1.classList.add('highlight');
-    area2.classList.add('highlight');
+rect1Touch.begin(() => {
     item1Pos = {
-        x: parseInt(item1.style.left),
-        y: parseInt(item1.style.top)
+        x: rect1.x(),
+        y: rect1.y()
     };
+    rect1.attr('stroke-width', 1);
 });
-item1Touch.move(() => {
-    item1.style.left = (item1Pos.x + (item1Touch.event.touches[0].x - item1Touch.event.touches[0].ox))+'px';
-    item1.style.top = (item1Pos.y + (item1Touch.event.touches[0].y - item1Touch.event.touches[0].oy))+'px';
-    console.log(JSON.stringify(item1Touch.event));
+rect1Touch.move(() => {
+    rect1.move(
+        item1Pos.x + (rect1Touch.event.touches[0].x - rect1Touch.event.touches[0].ox),
+        item1Pos.y + (rect1Touch.event.touches[0].y - rect1Touch.event.touches[0].oy)
+    );
+    console.log(JSON.stringify(rect1Touch.event));
 });
-item1Touch.end(() => {
-    area1.classList.remove('highlight');
-    area2.classList.remove('highlight');
+rect1Touch.end(() => {
+    rect1.attr('stroke-width', 0);
+    rect1.animate(500)
+        .move(rect1.x()-10, rect1.y()-10)
+        .size(220, 220)
+        .animate(300)
+        .x(rect1.x())
+        .y(rect1.y())
+        .width(200)
+        .height(200);
 });
 
-let item4Pos;
-item4Touch.begin(() => {
-    area1.classList.add('highlight');
-    area2.classList.add('highlight');
-    item4Pos = {
-        x: parseInt(item4.style.left),
-        y: parseInt(item4.style.top)
+let initPos;
+rect2Touch.begin(() => {
+    rect2.attr('stroke-width', 1);
+    initPos = {
+        x: rect2.x(),
+        y: rect2.y()
     };
 });
-item4Touch.move(() => {
-    item4.style.left = (item4Pos.x + (item4Touch.event.touches[0].x - item4Touch.event.touches[0].ox))+'px';
-    item4.style.top = (item4Pos.y + (item4Touch.event.touches[0].y - item4Touch.event.touches[0].oy))+'px';
-    console.log(JSON.stringify(item4Touch.event));
+rect2Touch.move(() => {
+    rect2.move(
+        initPos.x + (rect2Touch.event.touches[0].x - rect2Touch.event.touches[0].ox),
+        initPos.y + (rect2Touch.event.touches[0].y - rect2Touch.event.touches[0].oy)
+    );
 });
-item4Touch.end(() => {
-    area1.classList.remove('highlight');
-    area2.classList.remove('highlight');
+rect2Touch.end(() => {
+    rect2.attr('stroke-width', 0);
+    rect2.animate(500)
+        .move(rect2.x()-10, rect2.y()-10)
+        .size(220, 220)
+        .animate(300)
+        .x(rect2.x())
+        .y(rect2.y())
+        .width(200)
+        .height(200);
 });

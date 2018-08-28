@@ -1,9 +1,9 @@
 import Hammer from 'hammerjs';
-import {TapType, FingersCount} from '../constants';
-import {AbstractGesture} from './abstract-gesture';
+import {TapType, FingersCount, InputType} from '../constants';
+import {AbstractHammerGesture} from './abstract-hammer-gesture';
 
-export class MouseClickGesture extends AbstractGesture {
-    constructor(element, {tapType = TapType.single, fingers = FingersCount.one, timeout = 1}) {
+export class TouchClickGesture extends AbstractHammerGesture {
+    constructor(element, {tapType = TapType.single, fingers = FingersCount.one, timeout = 1, inputType = InputType.any}) {
         super(element, {
             start: 'panstart',
             move: 'panmove',
@@ -14,7 +14,7 @@ export class MouseClickGesture extends AbstractGesture {
             EventClass: Hammer.Pan,
             eventOptions: {pointers: fingers},
             initEventOptions: {pointers: fingers, time: tapType === TapType.long ? timeout : 0},
-            isMouse: true
+            source: inputType
         });
     }
 }
