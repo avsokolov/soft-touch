@@ -1,6 +1,8 @@
 import {GestureFactory, Types} from '../src';
 
 const draw = SVG('drawing');
+
+const rectOver = draw.rect(100, 500).move(300, 50).fill("#aaa").attr('stroke', '#66f').attr('stroke-width', 0);
 const rect1 = draw.rect(200, 200).move(50, 50).fill("#9cf");
 const rect2 = draw.rect(200, 200).move(50, 300).fill("#7ef");
 
@@ -26,15 +28,15 @@ const rect2Touch = GestureFactory({
 const dragOver = GestureFactory({
     gestureType: Types.GestureType.DragOver,
     options: {},
-    target: document.getElementById('drawing')
+    target: rectOver
 });
 
 dragOver.begin(() => {
-    document.getElementById('drawing').classList.add('highlight');
+    rectOver.attr('stroke-width', 2);
     console.log(dragOver.event);
 });
 dragOver.end(() => {
-    document.getElementById('drawing').classList.remove('highlight');
+    rectOver.attr('stroke-width', 0);
 });
 
 const wheel = GestureFactory({
