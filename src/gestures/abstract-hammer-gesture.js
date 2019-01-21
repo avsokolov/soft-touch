@@ -2,74 +2,87 @@ import Hammer from 'hammerjs';
 import {InputType} from '../constants';
 import {AbstractGesture} from './abstract-gesture';
 
-//Map of hammer wrapped elements
-const elements = new Map();
-
 export class AbstractHammerGesture extends AbstractGesture {
     constructor(element, options) {
-        if (!elements.has(element)) {
-            elements.set(element, new Hammer(element));
-        }
-
-        element = elements.get(element);
+        element = Hammer(element);
+        //remove default recognizers
+        while(element.recognizers.length) element.remove(element.recognizers[0]);
 
         super(element, options);
         this._clearEvent();
 
-        const {start, init, EventClass, eventOptions, InitEventClass, initEventOptions} = options;
-        this._element.add(new EventClass(eventOptions));
-        if (InitEventClass) {
-            this._element.add(new InitEventClass(initEventOptions));
+        const {init, EventClass, eventOptions, InitEventClass, initEventOptions} = options;
+        this._element.add(new InitEventClass(initEventOptions));
+
+        if (EventClass) {
+            this._mainRecognizer = new EventClass(eventOptions);
+            this._element.add(this._mainRecognizer);
+            this._mainRecognizer.set({ enable: false });
         }
 
-        element.on(init || start, (event) => this._beginEvent(event));
+        element.on(init, (event) => this._beginEvent(event));
+        if (this._options.cancel) {
+            this._element.on(this._options.cancel, (event) => this._endEvent(event));
+        }
     }
 
     _checkEvent(event) {
         return (
-            (event.pointerType === 'mouse') === (this._options.source === InputType.any || this._options.source === InputType.mouse)
+            !event.srcEvent.handled && (
+                this._options.source === InputType.any ||
+                (event.pointerType === 'mouse' && this._options.source === InputType.mouse) ||
+                (event.pointerType === 'touch' && this._options.source === InputType.touch)
+            )
         );
     }
 
     _beginEvent(event) {
         if (!this._checkEvent(event)) return;
 
-        this._initEvent(event);
+        event.srcEvent.stopPropagation();
+        event.srcEvent.handled = true;
 
-        if (event.type === this._options.start) {
-            this._element.on(this._options.move, (event) => this._moveEvent(event));
-            this._element.on(start, (event) => this._endEvent(event));
-        } else {
-            this._element.on(this._options.start, () => {
-                this._element.on(this._options.move, (event) => this._moveEvent(event));
-                this._element.on(this._options.end, (event) => this._endEvent(event));
-            });
-            this._element.on(this._options.initEnd, (event) => this._endEvent(event));
+        this._initEvent(event);
+        if (this._mainRecognizer) {
+            this._mainRecognizer.set({enable: true});
         }
 
+        if (this._options.move) {
+            this._element.on(this._options.move, (event) => this._moveEvent(event));
+        }
+
+        this._element.on(this._options.end, (event) => this._endEvent(event));
         AbstractGesture._call(this._handlers.begin);
     }
     _moveEvent(event) {
         if (!this.event.touches.length) return;
 
-        this._updateEvent(event);
-        this._handlers.move.forEach(cb => cb());
+        event.srcEvent.stopPropagation();
+        event.srcEvent.handled = true;
+
+        this._stateChange(() => this._updateEvent(event));
+        AbstractGesture._call(this._handlers.move);
         this.event.speed = 0;
     }
     _endEvent(event) {
-        if (!this.event.touches.length) return;
+        if (event) {
+            event.srcEvent.stopPropagation();
+        }
 
-        this._element.off(this._options.move);
+        if (this._mainRecognizer) {
+            this._mainRecognizer.set({ enable: false });
+        }
+
         this._element.off(this._options.end);
-        if (this._options.initEnd) {
-            this._element.off(this._options.initEnd);
-        }
-        if (this._options.init) {
-            this._element.off(this._options.start);
+        if (this._options.move) {
+            this._element.off(this._options.move);
         }
 
-        this._updateEvent(event);
-        this._handlers.end.forEach(cb => cb());
+        if (event) {
+            if (event.srcEvent.handled) return;
+            event.srcEvent.handled = true;
+        }
+        AbstractGesture._call(this._handlers.end);
         this._clearEvent();
     }
 
@@ -93,6 +106,9 @@ export class AbstractHammerGesture extends AbstractGesture {
     _updateEvent(event) {
         event.pointers.forEach((pointer, num) => {
             if (this.event.touches[num]) {
+                this.event.touches[num].dx = pointer.clientX - this.event.touches[num].x;
+                this.event.touches[num].dy = pointer.clientY - this.event.touches[num].y;
+
                 this.event.touches[num].x = pointer.clientX;
                 this.event.touches[num].y = pointer.clientY;
             }
