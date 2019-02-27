@@ -6,6 +6,12 @@ export class DragOverGesture extends AbstractGesture {
         super(element, options);
         this.event = {target: null};
 
+        if (this._options.startGesture) {
+            if (this._options.startGesture instanceof TouchClickGesture) {
+                this._options.startGesture = [this._options.startGesture];
+            }
+        }
+
         this._onGestureBegin = this._onGestureBegin.bind(this);
         this._onGestureMove = this._onGestureMove.bind(this);
         this._onGestureEnd = this._onGestureEnd.bind(this);
@@ -15,6 +21,8 @@ export class DragOverGesture extends AbstractGesture {
 
     _onGestureBegin(gesture) {
         if (!(gesture instanceof TouchClickGesture)) return;
+
+        if (this._options.startGesture && !this._options.startGesture.find(target => target === gesture)) return;
 
         this._gesture = gesture;
         this._active = false;

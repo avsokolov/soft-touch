@@ -1,4 +1,5 @@
 import {TapType, FingersCount, GestureType, InputType, MouseSegment} from './constants';
+import {DragGesture} from './gestures/drag';
 import {TouchClickGesture} from './gestures/touch-click';
 import {MouseWheelGesture} from './gestures/mouse-wheel';
 import {MouseOverGesture} from './gestures/mouse-over';
@@ -26,6 +27,9 @@ export function GestureFactory({gestureType, target, options = {}}) {
     switch (gestureType) {
         case GestureType.TouchClick:
             result = new TouchClickGesture(target, options);
+            break;
+        case GestureType.Drag:
+            result = new DragGesture(target, options);
             break;
         case GestureType.MouseOver:
             result = new MouseOverGesture(target, options);

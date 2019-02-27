@@ -1,12 +1,13 @@
 export const GestureType = {
     MouseOver: 1,
     TouchClick: 2,
-    DragOver: 3,
-    MouseWheel: 4,
-    Swipe: 7,
-    Spread: 8,
-    Pinch: 9,
-    Rotate: 10
+    Drag: 3,
+    DragOver: 4,
+    MouseWheel: 5,
+    Swipe: 6,
+    Spread: 7,
+    Pinch: 8,
+    Rotate: 9
 };
 
 export const InputType = {
@@ -19,7 +20,8 @@ export const InputType = {
 export const TapType = {
     single: 0,
     double: 1,
-    long: 2
+    triple: 2,
+    long: 3
 };
 
 export const MouseSegment = {

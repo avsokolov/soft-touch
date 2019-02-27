@@ -6,17 +6,21 @@
         <title>Soft Touch usage example</title>
         <style>
             #drawing {
-                display: inline-block;
-                width: 800px;
-                height: 800px;
-                background: burlywood;
-                border-radius: 3px;
-                margin: 20px;
-                position: relative;
+              display: inline-block;
+              width: 800px;
+              height: 800px;
+              background: burlywood;
+              border-radius: 3px;
+              margin: 20px;
+              position: relative;
+            }
+            * {
+              -ms-touch-action: none;
+              touch-action: none;
             }
             .highlight {
-                background: coral;
-                border: 2px solid chocolate;
+              background: coral;
+              border: 2px solid chocolate;
             }
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.3/svg.js"></script>
