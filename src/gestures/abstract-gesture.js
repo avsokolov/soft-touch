@@ -43,6 +43,10 @@ export class AbstractGesture {
         this.end(() => ActiveGestures.splice(ActiveGestures.indexOf(this), 1));
     }
 
+    setEnable(isEnable = true) {
+        this._options.disabled = !isEnable;
+    }
+
     begin(cb) {
         this._handlers.begin.push(cb);
         return () => AbstractGesture._off(this._handlers.begin, cb);

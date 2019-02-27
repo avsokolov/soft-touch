@@ -20,9 +20,31 @@ export class AbstractHammerGesture extends AbstractGesture {
             this._mainRecognizer.set({ enable: false });
         }
 
-        element.on(init, (event) => this._beginEvent(event));
-        if (this._options.cancel) {
-            this._element.on(this._options.cancel, (event) => this._endEvent(event));
+        if (!this._options.disabled) {
+            this._element.on(init, (event) => this._beginEvent(event));
+
+            if (this._options.cancel) {
+                this._element.on(this._options.cancel, (event) => this._endEvent(event));
+            }
+        }
+    }
+
+    setEnable(isEnable = true) {
+        super.setEnable(isEnable);
+
+        if (this._options.disabled) {
+            this._clearEvent();
+            this._element.off(options.init, (event) => this._beginEvent(event));
+
+            if (this._options.cancel) {
+                this._element.off(this._options.cancel, (event) => this._endEvent(event));
+            }
+        } else {
+            this._element.on(options.init, (event) => this._beginEvent(event));
+
+            if (this._options.cancel) {
+                this._element.on(this._options.cancel, (event) => this._endEvent(event));
+            }
         }
     }
 

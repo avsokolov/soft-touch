@@ -6,6 +6,8 @@ export class MouseWheelGesture extends AbstractGesture {
         this.event = {deltaX: undefined, deltaY: undefined};
 
         element.addEventListener('wheel', e => {
+            if (this._options.disabled) return;
+
             e = e || window.event;
 
             this.event.deltaY = e.deltaY || e.detail;
