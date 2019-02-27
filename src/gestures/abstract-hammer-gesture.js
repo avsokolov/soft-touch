@@ -27,12 +27,14 @@ export class AbstractHammerGesture extends AbstractGesture {
 
     _checkEvent(event) {
         return (
-            (event.pointerType === 'mouse') === (this._options.source === InputType.any || this._options.source === InputType.mouse)
+            this._options.source === InputType.any ||
+            (event.pointerType === 'mouse') === (this._options.source === InputType.mouse)
         );
     }
 
     _beginEvent(event) {
         if (!this._checkEvent(event)) return;
+        event.preventDefault();
 
         this._initEvent(event);
 
@@ -51,6 +53,7 @@ export class AbstractHammerGesture extends AbstractGesture {
     }
     _moveEvent(event) {
         if (!this.event.touches.length) return;
+        event.preventDefault();
 
         this._updateEvent(event);
         this._handlers.move.forEach(cb => cb());
@@ -58,6 +61,7 @@ export class AbstractHammerGesture extends AbstractGesture {
     }
     _endEvent(event) {
         if (!this.event.touches.length) return;
+        event.preventDefault();
 
         this._element.off(this._options.move);
         this._element.off(this._options.end);

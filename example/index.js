@@ -11,7 +11,8 @@ const rect1Touch = GestureFactory({
 
     options: {
         tapType: Types.TapType.long,
-        inputType: Types.InputType.any,
+        inputType: Types.InputType.touch,
+        fingers: Types.FingersCount.two,
         timeout: 500
     },
     target: rect1
