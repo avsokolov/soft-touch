@@ -34,13 +34,13 @@ export class AbstractHammerGesture extends AbstractGesture {
 
         if (this._options.disabled) {
             this._clearEvent();
-            this._element.off(options.init, (event) => this._beginEvent(event));
+            this._element.off(this._options.init, (event) => this._beginEvent(event));
 
             if (this._options.cancel) {
                 this._element.off(this._options.cancel, (event) => this._endEvent(event));
             }
         } else {
-            this._element.on(options.init, (event) => this._beginEvent(event));
+            this._element.on(this._options.init, (event) => this._beginEvent(event));
 
             if (this._options.cancel) {
                 this._element.on(this._options.cancel, (event) => this._endEvent(event));
@@ -50,20 +50,15 @@ export class AbstractHammerGesture extends AbstractGesture {
 
     _checkEvent(event) {
         return (
-            !event.srcEvent.handled && (
-                this._options.source === InputType.any ||
-                (event.pointerType === 'mouse' && this._options.source === InputType.mouse) ||
-                (event.pointerType === 'touch' && this._options.source === InputType.touch)
-            )
+            this._options.source === InputType.any ||
+            (event.pointerType === 'mouse' && this._options.source === InputType.mouse) ||
+            (event.pointerType === 'touch' && this._options.source === InputType.touch)
         );
     }
 
     _beginEvent(event) {
         if (!this._checkEvent(event)) return;
         event.preventDefault();
-
-        event.srcEvent.stopPropagation();
-        event.srcEvent.handled = true;
 
         this._initEvent(event);
         if (this._mainRecognizer) {
@@ -81,19 +76,12 @@ export class AbstractHammerGesture extends AbstractGesture {
         if (!this.event.touches.length) return;
         event.preventDefault();
 
-        event.srcEvent.stopPropagation();
-        event.srcEvent.handled = true;
-
         this._stateChange(() => this._updateEvent(event));
         AbstractGesture._call(this._handlers.move);
         this.event.speed = 0;
     }
     _endEvent(event) {
         if (!this.event.touches.length) return;
-        if (event) {
-            event.srcEvent.stopPropagation();
-        }
-
         if (this._mainRecognizer) {
             this._mainRecognizer.set({ enable: false });
         }
@@ -103,10 +91,6 @@ export class AbstractHammerGesture extends AbstractGesture {
             this._element.off(this._options.move);
         }
 
-        if (event) {
-            if (event.srcEvent.handled) return;
-            event.srcEvent.handled = true;
-        }
         AbstractGesture._call(this._handlers.end);
         this._clearEvent();
     }

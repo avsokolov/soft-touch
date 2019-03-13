@@ -20,7 +20,7 @@ export class DragOverGesture extends AbstractGesture {
     }
 
     _onGestureBegin(gesture) {
-        if (!(gesture instanceof TouchClickGesture)) return;
+        if (this._options.disabled || !(gesture instanceof TouchClickGesture)) return;
 
         if (this._options.startGesture && !this._options.startGesture.find(target => target === gesture)) return;
 

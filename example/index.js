@@ -5,13 +5,14 @@ const draw = SVG('drawing');
 const rectOver = draw.rect(100, 500).move(300, 50).fill("#aaa").attr('stroke', '#66f').attr('stroke-width', 0);
 const rect1 = draw.rect(200, 200).move(50, 50).fill("#9cf");
 const rect2 = draw.rect(200, 200).move(50, 300).fill("#7ef");
+const rect3 = draw.rect(200, 200).move(60, 310).fill("#18f");
 
 const rect1Drag = GestureFactory({
     gestureType: Types.GestureType.Drag,
     options: {
         tapType: Types.TapType.long,
         inputType: Types.InputType.touch,
-        fingers: Types.FingersCount.two,
+        fingers: Types.FingersCount.one,
         timeout: 500
     },
     target: rect1
@@ -24,6 +25,20 @@ const rect2Drag = GestureFactory({
         inputType: Types.InputType.any,
     },
     target: rect2
+});
+
+const rect3Click = GestureFactory({
+    gestureType: Types.GestureType.TouchClick,
+    options: {
+        tapType: Types.TapType.single,
+        inputType: Types.InputType.any,
+    },
+    target: rect3
+});
+
+rect3Click.end(() => {
+    const cur = rect3.attr('stroke-width');
+    rect3.attr('stroke-width', cur === 1 ? 0 : 1);
 });
 
 const dragOver = GestureFactory({
